@@ -1,8 +1,4 @@
-package ru.skillbranch.devintensive.extension
-
-import java.util.Collections.replaceAll
-
-
+package ru.skillbranch.devintensive.extensions
 
 /*Реализуй extension усекающий исходную строку до указанного числа символов (по умолчанию 16) и
 возвращающий усеченную строку с заполнителем "..." (если строка была усечена) если последний символ
