@@ -1,7 +1,6 @@
 package ru.skillbranch.devintensive.utils
 
 import java.lang.StringBuilder
-import java.util.*
 
 object Utils {
     fun parseFullName(fullName: String?): Pair<String?, String?> {
@@ -17,12 +16,12 @@ object Utils {
     }
 
     fun toInitials(firstName: String?, lastName: String?): String? {
-        return "${firstName?.getOrNull(0)?.toUpperCase()
-            ?: ""}${lastName?.getOrNull(0)?.toUpperCase() ?: ""}"
+        val result = "${firstName?.trim()?.getOrNull(0)?.toUpperCase() ?: ""}${lastName?.trim()?.getOrNull(0)?.toUpperCase() ?: ""}"
+        return if(result.isEmpty()) null else result
     }
 
-    fun cyrillicToLat(ch : Char) : String {
-        val latChar = when (ch) {
+    private fun cyrillicToLat(ch : Char) : String {
+        var latChar = when (ch.toLowerCase()) {
             'а' -> "a"
             'б' -> "b"
             'в' -> "v"
@@ -58,6 +57,8 @@ object Utils {
             'я' -> "ya"
             else -> ch.toString()
         }
+        if (ch.isUpperCase())
+            latChar = latChar[0].toUpperCase().toString() + latChar.subSequence(1, latChar.length)
         return latChar
     }
 
@@ -70,23 +71,16 @@ Utils.transliteration("Amazing Петр","_") //Amazing_Petr*/
         val words = payload.split(" ").toList()
         val sbTemp = StringBuilder()
         val sbResult = StringBuilder()
-
-        words.getOrNull(0)?.toLowerCase(Locale.ROOT)?.forEach { ch ->
-            sbTemp.append(cyrillicToLat(ch))
-        }
-        if (sbTemp.isNotEmpty()) {
-            sbTemp[0] = sbTemp[0].toUpperCase()
-            sbResult.append(sbTemp)
-            sbTemp.clear()
-        }
-        words.getOrNull(1)?.toLowerCase(Locale.ROOT)?.forEach { ch ->
-            sbTemp.append(cyrillicToLat(ch))
-        }
-        if (sbTemp.isNotEmpty()) {
-            if (sbResult.isNotEmpty())
+        words.forEach {
+            it.forEach { ch ->
+                sbTemp.append(cyrillicToLat(ch))
+            }
+            if (sbResult.isNotEmpty() && sbTemp.isNotEmpty())
                 sbResult.append(divider)
-            sbTemp[0] = sbTemp[0].toUpperCase()
-            sbResult.append(sbTemp)
+                    .append(sbTemp)
+            else
+                sbResult.append(sbTemp)
+            sbTemp.clear()
         }
         return sbResult.toString()
     }
