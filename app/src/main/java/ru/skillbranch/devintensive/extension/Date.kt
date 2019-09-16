@@ -85,13 +85,30 @@ Date().add(2, TimeUnits.MINUTE).humanizeDiff() //через 2 минуты
 Date().add(7, TimeUnits.DAY).humanizeDiff() //через 7 дней
 Date().add(-400, TimeUnits.DAY).humanizeDiff() //более года назад
 Date().add(400, TimeUnits.DAY).humanizeDiff() //более чем через год*/
+
+/*0с - 1с "только что"
+1с - 45с "несколько секунд назад"
+45с - 75с "минуту назад"
+75с - 45мин "N минут назад"
+45мин - 75мин "час назад"
+75мин 22ч "N часов назад"
+22ч - 26ч "день назад"
+26ч - 360д "N дней назад"
+>360д "более года назад"*/
 fun Date.humanizeDiff(date: Date = Date()): String {
-    val diff = this.time - date.time
-    var str: String
-    str = if (diff >= 0) {
-        "через $diff миллисекунд"
-    } else {
-        "${diff.absoluteValue} миллисекунд назад"
+    var diff = this.time - date.time
+    val pastTime = diff < 0
+    diff = diff.absoluteValue
+    return when {
+        diff > 360 * DAY -> if (pastTime) "более года назад" else "более чем через год"
+        diff in 26 * HOUR..360 * DAY -> return if (pastTime) "${TimeUnits.DAY.plural((diff / DAY).toInt())} назад" else "через ${TimeUnits.DAY.plural((diff / DAY).toInt())}"
+        diff in 22 * HOUR..26 * HOUR -> return if (pastTime) "день назад" else "через день"
+        diff in 75 * MINUTE..22 * HOUR -> return if (pastTime) "${TimeUnits.HOUR.plural((diff / HOUR).toInt())} назад" else "через ${TimeUnits.HOUR.plural((diff / HOUR).toInt())}"
+        diff in 45 * MINUTE..75 * MINUTE -> return if (pastTime) "час назад" else "через час"
+        diff in 75 * SECOND..45 * MINUTE -> return if (pastTime) "${TimeUnits.MINUTE.plural((diff / MINUTE).toInt())} назад" else "через ${TimeUnits.MINUTE.plural((diff / MINUTE).toInt())}"
+        diff in 45 * SECOND..75 * SECOND -> return if (pastTime) "минуту назад" else "через минуту"
+        diff in 1 * SECOND..45 * SECOND -> return if (pastTime) "несколько секунд назад" else "через несколько секунд"
+        diff in 0..1 * SECOND -> return "только что"
+        else -> ""
     }
-    return str
 }
