@@ -34,54 +34,41 @@ TimeUnits.MINUTE.plural(4) //4 минуты
 TimeUnits.HOUR.plural(19) //19 часов
 TimeUnits.DAY.plural(222) //222 дня*/
 
-fun getPlural(value: Int): Int {
-    return if (value % 10 == 1 && value % 100 != 11) //1, 21, 31, 41...
+fun getPlural(value: Int, one: String, few: String, many: String, other: String): String {
+    val mode = if (value % 10 == 1 && value % 100 != 11) //1, 21, 31, 41...
         0
     else if (value % 10 in 2..4 && (value % 100 < 10 || value % 100 >= 20)) //2, 3, 4, 12, 13, 14, 22, 23, 24...
         1
     else
         2 //5, 6, 7, 8, 9, 10, 15, 16, 17, 18, 19, 20...
+
+    return when(mode) {
+        0 -> "$value $one"
+        1 -> "$value $few"
+        2 -> "$value $many"
+        else -> "$value $other"
+    }
 }
 
 enum class TimeUnits {
     SECOND {
         override fun plural(value: Int): String {
-            return when(getPlural(value)) {
-                0 -> "$value секунду"
-                1 -> "$value секунды"
-                2 -> "$value секунд"
-                else -> "$value сек."
-            }
+            return getPlural(value, "секунду", "секунды", "секунд", "сек.")
         }
     },
     MINUTE {
         override fun plural(value: Int): String {
-            return when(getPlural(value)) {
-                0 -> "$value минуту"
-                1 -> "$value минуты"
-                2 -> "$value минут"
-                else -> "$value мин."
-            }
+            return getPlural(value, "минуту", "минуты", "минут", "мин.")
         }
     },
     HOUR {
         override fun plural(value: Int): String {
-            return when(getPlural(value)) {
-                0 -> "$value час"
-                1 -> "$value часа"
-                2 -> "$value часов"
-                else -> "$value ч."
-            }
+            return getPlural(value, "час", "часа", "часов", "ч.")
         }
     },
     DAY {
         override fun plural(value: Int): String {
-            return when(getPlural(value)) {
-                0 -> "$value день"
-                1 -> "$value дня"
-                2 -> "$value дней"
-                else -> "$value д."
-            }
+            return getPlural(value, "день", "дня", "дней", "д.")
         }
     };
 
