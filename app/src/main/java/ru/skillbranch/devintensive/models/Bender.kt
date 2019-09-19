@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.models
 
-import android.util.Log
 import java.util.*
 
 class Bender(var status: Status = Status.NORMAL, var question: Question = Question.NAME) {
@@ -26,7 +25,6 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
                 Question.IDLE -> null
             }
         }
-        Log.d("M_Bender", "validation = ${validation}, answer = ${answer}")
         return if (validation != null) {
             "${validation}\n${question.question}" to status.color
         } else if (question.answers.contains(answer.toLowerCase(Locale.ROOT))) {
