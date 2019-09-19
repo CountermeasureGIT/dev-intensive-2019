@@ -34,10 +34,10 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
             if (status.ordinal == Status.values().lastIndex) {
                 question = Question.NAME
                 status = Status.NORMAL
-                "Это неправильный ответ! Давай все по новой\n${question.question}" to status.color
+                "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
             } else {
                 status = status.nextStatus()
-                "Это неправильный ответ!\n${question.question}" to status.color
+                "Это неправильный ответ\n${question.question}" to status.color
             }
         }
     }
@@ -46,7 +46,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         NORMAL(Triple(255, 255, 255)),
         WARNING(Triple(255, 120, 0)),
         DANGER(Triple(255, 60, 60)),
-        CRITICAL(Triple(255, 255, 0));
+        CRITICAL(Triple(255, 0, 0));
 
         fun nextStatus(): Status {
             return if (this.ordinal < values().lastIndex) {
