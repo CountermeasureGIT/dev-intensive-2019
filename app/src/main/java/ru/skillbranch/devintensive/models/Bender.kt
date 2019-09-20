@@ -21,13 +21,18 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
                 Question.PROFESSION -> if (answer[0].isUpperCase()) "Профессия должна начинаться со строчной буквы" else null
                 Question.MATERIAL -> if (answer.contains("\\d".toRegex())) "Материал не должен содержать цифр" else null
                 Question.BDAY -> if (answer.contains("\\D".toRegex())) "Год моего рождения должен содержать только цифры" else null
-                Question.SERIAL -> if (answer.contains("\\D|\\d{8,}".toRegex()) || !answer.contains("\\d{7}".toRegex())) "Серийный номер содержит только цифры, и их 7" else null
+                Question.SERIAL -> if (answer.contains("\\D|\\d{8,}".toRegex()) || !answer.contains(
+                        "\\d{7}".toRegex()
+                    )
+                ) "Серийный номер содержит только цифры, и их 7" else null
                 Question.IDLE -> null
             }
         }
-        return if (validation != null) {
+        return if (validation != null)
             "${validation}\n${question.question}" to status.color
-        } else if (question.answers.contains(answer.toLowerCase(Locale.ROOT))) {
+        else if (question == Question.IDLE)
+            question.question to status.color
+        else if (question.answers.contains(answer.toLowerCase(Locale.ROOT))) {
             question = question.nextQuestion()
             "Отлично - ты справился\n${question.question}" to status.color
         } else {
